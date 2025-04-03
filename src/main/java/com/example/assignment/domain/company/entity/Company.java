@@ -16,4 +16,10 @@ public class Company {
     @Column(name="company_id")
     private Long id;
 
+    private String telSalesNum;     // 통신 판매 번호
+    private String companyName;     // 상호
+    private String busRegistrationNum;  // 사업자등록번호
+    private String corRegistrationNum;  // 법인등록번호
+    private String adDistrictCode;      // 행정구역코드
+
 }

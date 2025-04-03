@@ -1,0 +1,20 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>오류메시지</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<script type="text/javascript">
+alert("파일을 확인할 수 없습니다.");
+window.history.back();
+</script>
+
+</body>
+</html>

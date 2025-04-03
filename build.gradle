@@ -24,8 +24,16 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	// lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// csv
+	implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.9.0'
+
+	// valid
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+
 }
 
 tasks.named('test') {
