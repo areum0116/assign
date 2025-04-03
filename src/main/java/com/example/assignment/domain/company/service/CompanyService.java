@@ -3,6 +3,8 @@ package com.example.assignment.domain.company.service;
 import com.example.assignment.domain.company.dto.request.CompanySaveRequest;
 import com.example.assignment.domain.company.dto.response.CompanySaveResponse;
 import com.example.assignment.domain.company.repository.CompanyRepository;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -11,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,6 +36,7 @@ public class CompanyService {
     private final RestTemplate restTemplate;
     private final CompanyRepository companyRepository;
 
+    // 파일 다운로드
     private String saveFile(byte[] fileData, String city, String district) {
         String fileName = "company_" + city + "_" + district + ".csv";
         Path filePath = Paths.get(DOWNLOAD_PATH, fileName);
@@ -42,11 +49,26 @@ public class CompanyService {
         }
     }
 
-    public CompanySaveResponse saveCompany(CompanySaveRequest requestDto) {
+    // '법인'만 필터링
+    private void filterCompanyByCorporation(String inputPath, String outputPath) throws Exception{
+        try (
+                Reader reader = Files.newBufferedReader(Paths.get(inputPath));
+                CSVReader csvReader = new CSVReader(reader);
+                Writer writer = Files.newBufferedWriter(Paths.get(outputPath), StandardCharsets.UTF_8);
+                CSVWriter csvWriter = new CSVWriter(writer);
+                ) {
+            String[] header = csvReader.readNext();
+            if(header == null) return;
+
+            // TODO : 컬럼 인덱스 찾은 후 존재한다면 필터링, 파일 저장.
+        }
+    }
+
+    public CompanySaveResponse saveCompany(CompanySaveRequest requestDto) throws URISyntaxException {
         // 파일명 url 인코딩
         String encodedFileName = URLEncoder.encode("통신판매사업자_" + requestDto.getCity() + "_" + requestDto.getDistrict() + ".csv", StandardCharsets.UTF_8);
         // 최종 url
-        String url = BASE_URL + "?atchFileUrl=dataopen&atchFileNm=" + encodedFileName;
+        URI url = new URI(BASE_URL + "?atchFileUrl=dataopen&atchFileNm=" + encodedFileName);
 
         // 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -63,9 +85,6 @@ public class CompanyService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
-
-        ///////
-        System.out.println(url);
 
         if(response.getStatusCode() == HttpStatus.OK) {
             String message = saveFile(response.getBody(), requestDto.getCity(), requestDto.getDistrict());

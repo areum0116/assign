@@ -34,6 +34,8 @@ dependencies {
 	// valid
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 
+	// openCSV
+	implementation 'com.opencsv:opencsv:5.9'
 }
 
 tasks.named('test') {

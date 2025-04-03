@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URISyntaxException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -18,7 +20,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @PostMapping("/companies")
-    public CompanySaveResponse saveCompany(@RequestBody @Valid CompanySaveRequest requestDto) {
+    public CompanySaveResponse saveCompany(@RequestBody @Valid CompanySaveRequest requestDto) throws URISyntaxException {
         return companyService.saveCompany(requestDto);
     }
 }
