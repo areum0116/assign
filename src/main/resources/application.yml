@@ -22,3 +22,8 @@ spring:
 server:
   error:
     include-message: always
+
+api:
+  fair-trade-commission:
+    base-url: ${FAIR_TRADE_URL}
+    key: ${AUTH_KEY}
