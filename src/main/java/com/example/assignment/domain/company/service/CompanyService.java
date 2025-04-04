@@ -10,12 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,22 +41,13 @@ public class CompanyService {
         Path filePath = Paths.get(DOWNLOAD_PATH, fileName);
         try {
             Files.createDirectories(filePath.getParent());
-//            Files.write(filePath, fileData, StandardOpenOption.CREATE);
 
-            // TODO : Convert ANSI to UTF-8
-            ByteBuffer bb = ByteBuffer.wrap(Files.readAllBytes(filePath));
-            CharBuffer cb = Charset.forName("windows-1252").decode(bb);
-            ByteBuffer buffer = StandardCharsets.UTF_8.encode(cb);
-            Files.write(filePath, buffer.array());
-
-
-//            try(OutputStream out = Files.newOutputStream(filePath)) {
-//                Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
-//                writer.write(new String(fileData, StandardCharsets.UTF_8));
-//            }
-
-
-//            Files.newBufferedWriter(filePath, StandardCharsets.UTF_8).write(new String(fileData, StandardCharsets.UTF_8));
+            // decoding (euc-kr -> string)
+            String str = new String(fileData, "euc-kr");
+            // encoding (string -> utf8)
+            byte[] utf8Data = str.getBytes(StandardCharsets.UTF_8);
+            // utf8 byte[] 저장
+            Files.write(filePath, utf8Data, StandardOpenOption.CREATE);
 
             return "파일 저장 완료: " + filePath;
         } catch (IOException e) {
